@@ -1,0 +1,88 @@
+#item-panel {
+	width:350px;
+	height:200px;
+	position:fixed;
+	visibility:hidden;
+	z-index:2;
+	background-color:black;
+	color:white;
+	border: 4px solid;
+	border-radius: 10px;
+	border-color:black;
+}
+
+#tv-screen {
+	position:relative;
+	left:3%;
+	top:15%;
+	width:100%;
+	height:85%;
+}
+
+#option-pane {
+	position:relative;
+	width:15%;
+	height:100%;
+	left:-12%;
+	background-color:red;
+	transition: left 1s;
+}
+
+#option-pane:hover {
+	left:0%;
+	transition: left 1s;
+}
+
+.option {
+	background:linear-gradient(red, #ff8080);
+	background: -moz-linear-gradient(red, #ff8080);
+	height:10%;
+	width:100%;
+	text-align:center;
+	visibility:hidden;
+}
+
+.option-label {
+	margin-top:10%;
+	position:absolute;
+	font-family:sans-serif;
+	color:white;
+	width:100%;
+}
+
+.option:hover {
+	background:linear-gradient(#ff4d4d, #ff4d4d);
+	background: -moz-linear-gradient(#ff4d4d, #ff4d4d);
+	text-align:center;
+}
+
+.submenu {
+	position:inherit;
+	width:100%;
+}
+
+.submenu li {
+	padding-top:5px;
+	padding-bottom:5px;
+	list-style-type:none;
+	background:linear-gradient(red, #ff8080);
+	background: -moz-linear-gradient(red, #ff8080);
+}
+
+.submenu li a {
+	color:white;
+	text-decoration:none;
+}
+
+.submenu li:hover {
+	background:linear-gradient(#ff4d4d, #ff4d4d);
+	background: -moz-linear-gradient(#ff4d4d, #ff4d4d);
+	text-align:center;
+}
+
+.option-item {
+	visibility:hidden;
+	position:absolute;
+	width:80%;
+	left:80%;
+}

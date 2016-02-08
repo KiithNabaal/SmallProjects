@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>
+			Verizon Online
+		</title>
+
+		<link rel="icon" type="image/png" href="../imgs/main/favicon.png">
+
+		<link rel="stylesheet" type="text/css" href="../styles/main.css">
+		<link rel="stylesheet" type="text/css" href="../styles/components.css">
+		
+		<script src="../js/jquery.min.js"></script>
+		
+		<script src="../js/react-0.14.7/react.js"></script>
+		<script src="../js/react-0.14.7/react-dom.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+		<script src="../js/helper.js"></script>
+	</head>
+
+	<body>
+		<div id="container">
+			<div id="item-panel">
+				<img id="thumb" style="padding-left:4px; padding-top:4px;" src="" /><br />
+				<div id="title" style="padding-left:4px;"></div>
+				<div id="rating" style="padding-left:4px;"></div><br/>
+				<div id="desc" style="padding-left:4px;"></div>	
+			</div>
+			
+
+			<div id="header">
+				<img src="../imgs/main/logo.jpg" id="logo" />
+			</div>
+
+			<img id="tv-screen" src="" />
+			
+			<div id="main-window">
+				<div id="option-pane" onmouseover="showComponents()" onmouseout="hideComponents()">
+					<script type="text/babel">	
+						var optionPane = document.getElementById("option-pane");
+
+						var FilterOption = React.createClass({
+							reportChange: function(e) {
+								this.props.onFilter(e.target.checked);
+							},
+
+							render: function() {
+								return (<span className="option-label" onChange={this.reportChange}>
+										<input type="checkbox" />
+										<b>{this.props.label}</b>
+									</span>);
+							}
+						});
+
+						var OptionList = React.createClass({
+							getInitialState: function() {
+								return {data: []};
+								
+							},
+
+							componentDidMount: function() {
+								$.ajax({
+									url: this.props.url,
+									dataType: "json",
+									cache: false,
+									success: function(data) {
+										this.setState({data: data});
+									}.bind(this),
+									error: function() {
+									console.log("error - time unadjusted");
+									}.bind(this)
+								});
+							},
+
+							adjustTime: function(val) {
+								$.ajax({
+									url: "/advanceTime",
+									dataType: "json",
+									cache: false,
+									success: function(data) {
+										this.setState({data: data});
+									}.bind(this),
+									error: function() {
+									console.log("error - time unadjusted");
+									}.bind(this)
+								});
+							},
+
+							filterFeatures: function(val) {
+								$.ajax({
+									url: "/filterFeatures",
+									dataType: "json",
+									cache: false,
+									success: function(data) {
+										this.setState({data: data});
+									}.bind(this),
+									error: function() {
+										console.log("error - could not filter");
+									}.bind(this)
+								});
+							},
+
+							unhighlight: hideComponents,
+
+							render: function() {
+						
+								if(this.state.data.options==undefined) {
+									return(<div></div>);	 
+								}
+
+								return (<span onMouseOut={this.unhighlight}>
+										<MenuOption key="0" label={this.state.data.options[0].type} data={this.state.data.options[0].entries} />
+										<MenuOption key="1" label={this.state.data.options[1].type} data={this.state.data.options[1].entries} />
+										<MenuOption key="2" label={this.state.data.options[2].type} data={this.state.data.options[2].entries} /><br/>
+										<FilterOption onFilter={this.adjustTime} label="Adjust the time." /><br/>
+										<FilterOption onFilter={this.filterFeatures} label="Filter unsubscribed features." />
+									</span>);
+							}
+						});
+
+						var MenuOption = React.createClass({
+							highlight: function(e) {
+								var optionStyle="background:linear-gradient(#ff4d4d, #ff4d4d);visibility:visible;height:10%;width:100%;text-align:center;";
+								var submenuStyle="visibility:visible;";
+
+								var option = e.currentTarget;
+								option.setAttribute("style", optionStyle);
+								option.childNodes[1].setAttribute("style", submenuStyle);
+							},
+
+							unhighlight: function(e) {
+								var optionStyle="background:linear-gradient(red, #ff4d4d);visibility:visible;height:10%;width:100%;text-align:center;";
+								var submenuStyle="visibility:hidden;";
+
+								var option = e.currentTarget;
+								option.setAttribute("style", optionStyle);
+								option.childNodes[1].setAttribute("style", submenuStyle);
+							},
+
+							render: function() {
+									return (<div className="option" onMouseOver={this.highlight} onMouseOut={this.unhighlight}>
+											<div className="option-label">
+												<b>{this.props.label}</b>
+											</div>
+
+											<div className="option-item">
+												<Submenu data={this.props.data}/>
+											</div>
+										</div>);
+								
+							}
+						});
+
+						var Submenu = React.createClass({
+							render: function() {
+								if(this.props.data) {
+									var itemList = this.props.data.map(function(i) {
+												return (<SubmenuItem key={i.id} data={i} />);
+											});
+
+									return (<ul className="submenu">{itemList}</ul>);
+								}
+
+								return (<ul></ul>);
+							}
+						});
+
+						var SubmenuItem = React.createClass({
+							highlight: function(e) {
+								var panelStyle = "visibility:visible;";
+
+								//Add pixels to each so we can still use the menu boxes
+								var left = "left:" + (e.pageX + 50) + "px;";
+								var top = "top:" + (e.pageY + 50) + "px;";
+
+								panelStyle += left + top;
+
+								var panel = document.getElementById("item-panel");
+								panel.setAttribute("style", panelStyle);
+								
+								var panelThumb = document.getElementById("thumb");
+								var panelTitle = document.getElementById("title");
+								var panelRating = document.getElementById("rating");
+								var panelDescription = document.getElementById("desc");
+
+								panelThumb.src = this.props.data.iconURL;
+								panelTitle.innerHTML = this.props.data.showTitle;
+								panelRating.innerHTML = this.props.data.showRating;
+								panelDescription.innerHTML = this.props.data.showDescription;		
+							},
+
+							unhighlight: function() {
+								var panelStyle="visibility:hidden;";
+
+								document.getElementById("item-panel").setAttribute("style", panelStyle);
+							},
+
+							clickHandle: function(e) {
+								var channel = e.currentTarget.innerHTML;
+								
+								var tv = document.getElementById("tv-screen");
+
+								tv.src = this.props.data.showImage;
+							},
+
+							render: function() {
+								return (<li onMouseOver={this.highlight} onMouseOut={this.unhighlight}>
+										<a key={this.props.data.id} onClick={this.clickHandle} href="#">{this.props.data.channelName}</a>
+									</li>);
+							}
+						});
+
+						ReactDOM.render(<OptionList url="/channelData" />, optionPane);		
+					</script>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
