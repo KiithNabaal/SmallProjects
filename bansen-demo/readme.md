@@ -7,6 +7,7 @@ The purpose of this demo is to demonstrate rapid prototyping of a web applicatio
 JavaScript library (React.js). It took a little over 4 days to design and implement this application.
 
 I developed the application in steps:
+
 	1. First I did a little bit of sketching of how the application should look in MS Paint.
 	2. Then, I built the site in HTML and CSS to get the overall look and structure.
 	3. I then slowly started adding in React components, using client-side data for state.
@@ -20,6 +21,7 @@ As far as the color schemes and font goes, I tried to be as close to Verizon as 
 to use red, black, and white. I figured I would stick with this to give a Verizon "look and feel".
 
 How to use the demo:
+
 	1. This is a Node/Express application, so run "node main.js" to get the app started (runs on port 8000).
 
 	2. When the page loads, you will see a red bar on the left side of the screen. Hover your cursor over
