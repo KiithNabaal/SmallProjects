@@ -40,11 +40,20 @@ serveLog port = withSocketsDo $
 				   hSetBuffering connhdl LineBuffering
 				   req <- hGetContents connhdl
 				   handleRequest connhdl req
-				  	
+				  -- hPutStr connhdl "HTTP/1.1 666 Evil\r\n\r\nPong! Text! <html></html>\r\n"
+				   -- hPutStr connhdl "\n"
+				   -- hFlush connhdl
+				   -- hClose connhdl
+								
+			-- handle :: MVar() -> HandlerFunc
+			-- handle lock clientAddr url =
+			--	withMVar lock
+			--		(\a -> handleRequest url >> return a)
+	
 toJSON :: String -> String			
 toJSON val = "{ result: " ++ val ++ " }"
 			
 handleRequest :: HandlerFunc
-handleRequest conn httpReq
-	| ((head $ words httpReq) == "GET") = (hPutStr conn ("HTTP/1.1 200 Ok\r\n\r\n" ++ httpReq ++ "\r\n")) >> (hClose conn)
+handleRequest conn httpReq =
+	| ((head $ words httpReq) == "GET") = (hPutStr conn "HTTP/1.1 666 Evil\r\n\r\n"++ (toJSON $ det $  ) ++"\r\n") >> (hClose conn)
 	| otherwise = (hPutStr conn "HTTP/1.1 404\r\n\r\n<html>Request does not map</html>\r\n") >> (hClose conn)
