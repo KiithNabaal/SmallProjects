@@ -4,7 +4,7 @@ module UrlParser
 ,	splitStr
 ) where
 
-getQuery header = last $ init $ words header
+getQuery req = last $ init $ words req
 
 buildToken str delim = takeWhile (/= delim) str
 
